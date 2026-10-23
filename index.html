@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://hunge2.github.io/AFTERSCENE/">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="assets/base.css">
-  <link rel="stylesheet" href="assets/landing.css?v=89d1cd8">
+  <link rel="stylesheet" href="assets/landing.css?v=shop-motion-20261023">
 </head>
 <body>
   <header class="site-header">
@@ -88,13 +88,26 @@
           <p>내 취향의 영화 포스터, 굿즈 등<br>다양한 상품을 소장해보세요.</p>
           <a class="button" href="#apply">SHOP 둘러보기 <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="shop-gallery" aria-label="영화 포스터와 음반 이미지">
-          <img class="shop-image moonlight" src="assets/images/Moonlight_Poster.jpg" alt="문라이트 포스터">
-          <img class="shop-image et" src="assets/images/ET_Poster.jpg" alt="E.T. 포스터">
-          <img class="shop-image longlegs" src="assets/images/longlegs_Poster.jpg" alt="롱레그스 포스터">
-          <img class="shop-image grand-blue" src="assets/images/Grand%20Blue_Poster.jpg" alt="그랑 블루 음반">
-          <img class="shop-image leon" src="assets/images/Leon_LP.jpg" alt="레옹 음반">
-          <img class="shop-image shutter" src="assets/images/shutterisland_LP.jpg" alt="셔터 아일랜드 음반">
+        <div class="shop-gallery" aria-label="영화 포스터가 세 줄로 움직이는 갤러리">
+          <div class="shop-column shop-column--down shop-column--left" data-copies="3">
+            <div class="shop-track"><div class="poster-sequence">
+              <img src="assets/images/ET_Poster.jpg" alt="E.T. 포스터">
+              <img src="assets/images/Michael_Poster.jpg" alt="마이클 포스터">
+            </div></div>
+          </div>
+          <div class="shop-column shop-column--up shop-column--middle" data-copies="2">
+            <div class="shop-track"><div class="poster-sequence">
+              <img src="assets/images/blade%20runner.jpg" alt="블레이드 러너 포스터">
+              <img src="assets/images/Moonlight_Poster.jpg" alt="문라이트 포스터">
+              <img src="assets/images/Joker_Poster.jpg" alt="조커 포스터">
+            </div></div>
+          </div>
+          <div class="shop-column shop-column--down shop-column--right" data-copies="3">
+            <div class="shop-track"><div class="poster-sequence">
+              <img src="assets/images/Big_poster.jpg" alt="빅 레보스키 포스터">
+              <img src="assets/images/jaws_poster.jpg" alt="죠스 포스터">
+            </div></div>
+          </div>
         </div>
       </div>
     </section>
@@ -136,7 +149,6 @@
     </div>
   </div>
   <script src="assets/privacy.js"></script>
-  <script src="assets/landing.js"></script>
+  <script src="assets/landing.js?v=shop-motion-20261023"></script>
 </body>
 </html>
-
