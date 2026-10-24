@@ -1,4 +1,14 @@
 (function(){
+  document.documentElement.classList.add('has-js');
+  var revealSections=document.querySelectorAll('.scroll-reveal');
+  if('IntersectionObserver' in window){
+    var revealObserver=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target)}
+      });
+    },{threshold:0.08,rootMargin:'0px 0px -7% 0px'});
+    revealSections.forEach(function(section){revealObserver.observe(section)});
+  }else revealSections.forEach(function(section){section.classList.add('is-visible')});
   document.querySelectorAll('.shop-column[data-copies]').forEach(function(column){
     var track=column.querySelector('.shop-track');
     var sequence=track&&track.querySelector('.poster-sequence');
