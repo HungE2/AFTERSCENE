@@ -71,7 +71,7 @@ body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;color:var
 .phone-back{position:absolute;z-index:1;left:10%;top:3%;width:58%;height:92%;transform:rotate(-19.62deg);transform-origin:center;pointer-events:none}
 .phone-back img{display:block;width:100%;height:100%;object-fit:contain}
 .phone-front{position:absolute;z-index:2;left:31.4%;top:-2%;width:64.7%;height:103.7%}
-.phone-front video{display:block;width:100%;height:100%;object-fit:contain;clip-path:inset(0 18.5% 0 18.5%)}
+.phone-front video{display:block;width:100%;height:100%;object-fit:contain;clip-path:inset(0 22.5% 0 20%)}
 .features-copy{top:159px;left:777px;max-width:641px}
 .features h2{background:linear-gradient(to bottom,#fff 0%,#fff 47%,#45464b 100%);background-clip:text;-webkit-background-clip:text;color:transparent}
 .features p{margin-top:25px}
