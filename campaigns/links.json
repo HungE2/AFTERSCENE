@@ -1,0 +1,101 @@
+[
+  {
+    "id": "instagram_bio",
+    "channel": "Instagram 프로필",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=instagram&utm_medium=social&utm_campaign=taste_launch&utm_content=bio",
+    "utm_source": "instagram",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "bio",
+    "png": "instagram_bio.png",
+    "svg": "instagram_bio.svg"
+  },
+  {
+    "id": "instagram_story",
+    "channel": "Instagram 스토리",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=instagram&utm_medium=social&utm_campaign=taste_launch&utm_content=story_01",
+    "utm_source": "instagram",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "story_01",
+    "png": "instagram_story.png",
+    "svg": "instagram_story.svg"
+  },
+  {
+    "id": "instagram_feed_qr",
+    "channel": "Instagram 피드 QR",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=instagram&utm_medium=qr&utm_campaign=taste_launch&utm_content=feed_qr_01",
+    "utm_source": "instagram",
+    "utm_medium": "qr",
+    "utm_campaign": "taste_launch",
+    "utm_content": "feed_qr_01",
+    "png": "instagram_feed_qr.png",
+    "svg": "instagram_feed_qr.svg"
+  },
+  {
+    "id": "facebook",
+    "channel": "Facebook",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=facebook&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01",
+    "utm_source": "facebook",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "post_01",
+    "png": "facebook.png",
+    "svg": "facebook.svg"
+  },
+  {
+    "id": "x",
+    "channel": "X",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=x&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01",
+    "utm_source": "x",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "post_01",
+    "png": "x.png",
+    "svg": "x.svg"
+  },
+  {
+    "id": "threads",
+    "channel": "Threads",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=threads&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01",
+    "utm_source": "threads",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "post_01",
+    "png": "threads.png",
+    "svg": "threads.svg"
+  },
+  {
+    "id": "youtube",
+    "channel": "YouTube 설명·프로필",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=youtube&utm_medium=social&utm_campaign=taste_launch&utm_content=description_01",
+    "utm_source": "youtube",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "description_01",
+    "png": "youtube.png",
+    "svg": "youtube.svg"
+  },
+  {
+    "id": "naver_blog",
+    "channel": "네이버 블로그",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=naver_blog&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01",
+    "utm_source": "naver_blog",
+    "utm_medium": "social",
+    "utm_campaign": "taste_launch",
+    "utm_content": "post_01",
+    "png": "naver_blog.png",
+    "svg": "naver_blog.svg"
+  },
+  {
+    "id": "offline_poster",
+    "channel": "오프라인 포스터",
+    "url": "https://hunge2.github.io/AFTERSCENE/?utm_source=poster&utm_medium=qr&utm_campaign=taste_launch&utm_content=poster_01",
+    "utm_source": "poster",
+    "utm_medium": "qr",
+    "utm_campaign": "taste_launch",
+    "utm_content": "poster_01",
+    "png": "offline_poster.png",
+    "svg": "offline_poster.svg"
+  }
+]
