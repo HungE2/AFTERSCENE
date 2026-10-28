@@ -62,7 +62,7 @@
     let finished = false;
     function finish() { if (finished) return; finished = true; if (done) done(); }
     if (done) { payload.event_callback = finish; payload.event_timeout = 700; setTimeout(finish, 800); }
-    if (production) window.gtag('event', name, payload);
+    if (production) window.gtag('event', name, { ...payload, send_to: id });
     else { window.dataLayer.push({ event: name, ...payload }); if (done) setTimeout(finish, 0); }
   }
   window.AF = { track, state, pageType };
@@ -71,7 +71,7 @@
     const tag = document.createElement('script'); tag.async = true;
     tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
     document.head.appendChild(tag);
-    window.gtag('event', 'page_view', { page_location: clean.href, page_title: document.title, page_type: pageType });
+    window.gtag('event', 'page_view', { send_to: id, page_location: clean.href, page_title: document.title, page_type: pageType });
   }
   if (landingCampaign) {
     const seen=readRecord('campaign_seen');
