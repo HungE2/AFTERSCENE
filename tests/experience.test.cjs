@@ -66,8 +66,20 @@ test('production tag uses supplied ID; explicit allowlist drops PII; previews lo
   assert.match(a.document.querySelector('script[src*="googletagmanager"]').src,/G-77DJK8C5S3/);
   a.AF.track('example',{email:'private@example.com',name:'PRIVATE_NAME',plan_id:'choice'});
   const event=a.events().find(e=>e.event==='example');assert.equal(event.plan_id,'choice');assert.equal(event.email,undefined);
-  const view=a.events().find(e=>e.event==='page_view');assert.doesNotMatch(view.page_location,/email|private|#apply/);assert.match(view.page_location,/utm_source=instagram/);
+  const view=a.events().find(e=>e.event==='page_view');assert.doesNotMatch(view.page_location,/email|private|#apply/);assert.match(view.page_location,/utm_source=instagram/);assert.equal(view.send_to,'G-77DJK8C5S3');assert.equal(event.send_to,'G-77DJK8C5S3');
   const b=app('index.html');assert.equal(b.document.querySelector('script[src*="googletagmanager"]'),null);
+});
+test('every public page loads the single GA4 bootstrap early without the missing ga4-easy script',()=>{
+  for(const file of ['index.html','taste.html','pricing.html','result.html']){
+    const html=fs.readFileSync(path.join(root,file),'utf8');
+    assert.doesNotMatch(html,/ga4-easy\.js/);
+    assert.equal((html.match(/src="assets\/analytics\.js"/g)||[]).length,1,file);
+    assert.ok(html.indexOf('src="assets/analytics.js"')<html.indexOf('<link'),file);
+    const a=app(file,{production:true});
+    assert.equal(a.events().filter(e=>e.event==='page_view').length,1,file);
+    assert.equal(a.sandbox.dataLayer.filter(e=>e[0]==='config'&&e[1]==='G-77DJK8C5S3').length,1,file);
+  }
+  assert.doesNotMatch(fs.readFileSync(path.join(root,'campaigns/index.html'),'utf8'),/ga4-easy\.js/);
 });
 test('mood selection creates three movies and suppresses repeated identical selections',()=>{
   const a=app('index.html');a.load('experience.js');a.click('[data-mood="reflect"]');a.click('[data-mood="reflect"]');assert.equal(a.document.querySelectorAll('#mood-results .movie-card').length,3);assert.equal(a.events().filter(e=>e.event==='mood_select').length,1);
