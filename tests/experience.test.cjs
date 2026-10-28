@@ -12,14 +12,15 @@ function app(file,{production=false,query='',blockedStorage=false,store=new Map(
   location.replace=(url)=>{location.href=new URL(url,address.href).href;};
   const storage={getItem:key=>{if(blockedStorage)throw Error('blocked');return store.get(key)||null;},setItem:(key,value)=>{if(blockedStorage)throw Error('blocked');store.set(key,value);},removeItem:key=>store.delete(key)};
   const callbacks=[];
-  const sandbox={document,window:null,location,navigator,sessionStorage:storage,URL,URLSearchParams,console,history:{replaceState(){}},setTimeout:(fn)=>{callbacks.push(fn);return callbacks.length;},clearTimeout(){}};
+const sandbox={document,window:null,location,navigator,sessionStorage:storage,URL,URLSearchParams,console,history:{replaceState(){}},setTimeout:(fn)=>{callbacks.push(fn);return callbacks.length;},clearTimeout(){}};
   sandbox.window=sandbox;const context=vm.createContext(sandbox);
   function load(script){vm.runInContext(fs.readFileSync(path.join(root,'assets',script),'utf8'),context,{filename:script});}
   load('analytics.js');
   const events=()=>sandbox.dataLayer.map(e=>e.event?e:(e[0]==='event'?{event:e[1],...e[2]}:null)).filter(Boolean);
   function click(selector){const el=document.querySelector(selector);assert.ok(el,selector);el.dispatchEvent(new dom.Event('click',{bubbles:true}));}
   function input(selector,value){const el=document.querySelector(selector);el.value=value;el.dispatchEvent(new dom.Event('input',{bubbles:true}));}
-  return {document,location,store,load,click,input,events,AF:sandbox.AF,callbacks,sandbox,dom};
+  const ready=()=>document.dispatchEvent(new dom.Event('DOMContentLoaded'));
+  return {document,location,store,load,click,input,events,AF:sandbox.AF,callbacks,sandbox,dom,ready};
 }
 test('all 256 answer combinations resolve deterministically; previous answers persist; one completion per run',()=>{
   for(let code=0;code<256;code++){
@@ -88,4 +89,46 @@ test('new pages and movie images link to existing local files',()=>{
       const target=decodeURIComponent(url.split(/[?#]/)[0]);if(target)assert.ok(fs.existsSync(path.join(root,target)),file+' → '+target);
     });
   }
+});
+test('all nine existing campaign URLs produce channel-specific arrival events and refresh suppression',()=>{
+  const rows=JSON.parse(fs.readFileSync(path.join(root,'campaigns/links.json'),'utf8'));
+  assert.equal(rows.length,9);
+  for(const row of rows){
+    const query=new URL(row.url).search;
+    const a=app('index.html',{production:true,query});
+    const visits=a.events().filter(e=>e.event==='campaign_visit');assert.equal(visits.length,1,row.id);
+    assert.equal(visits[0].promo_id,row.id);assert.equal(visits[0].promo_source,row.utm_source);assert.equal(visits[0].promo_medium,row.utm_medium);assert.equal(visits[0].promo_content,row.utm_content);
+    const refresh=app('index.html',{production:true,query,store:a.store});assert.equal(refresh.events().filter(e=>e.event==='campaign_visit').length,0);
+    const pricing=app('pricing.html',{store:a.store});pricing.load('experience.js');pricing.click('[data-plan="choice"]');pricing.click('#plan-confirm');
+    const confirmed=pricing.events().find(e=>e.event==='plan_preference_submit');assert.equal(confirmed.promo_id,row.id);
+    const signup=app('index.html',{store:a.store});signup.AF.track('preregistration_complete',{submission_type:'demo'});assert.equal(signup.events().find(e=>e.event==='preregistration_complete').promo_id,row.id);
+  }
+});
+test('only exact registered campaign tuples count; plain URLs, shared results and unknown UTMs do not',()=>{
+  for(const query of ['', '?utm_source=instagram', '?utm_source=instagram&utm_medium=social&utm_campaign=taste_launch&utm_content=unknown', '?utm_source=private%40example.com&utm_medium=social&utm_campaign=taste_launch&utm_content=bio']){
+    const a=app('index.html',{query});assert.equal(a.events().filter(e=>e.event==='campaign_visit').length,0);
+  }
+  const a=app('taste.html',{query:'?result=visual&utm_source=afterscene&utm_medium=referral&utm_campaign=taste_share&utm_content=visual'});assert.equal(a.events().filter(e=>e.event==='campaign_visit').length,0);
+});
+test('campaign expiry, different channels, malformed storage and blocked storage remain safe',()=>{
+  const rows=JSON.parse(fs.readFileSync(path.join(root,'campaigns/links.json'),'utf8'));const query=new URL(rows[0].url).search;
+  const a=app('index.html',{query});
+  const other=app('index.html',{query:new URL(rows[1].url).search,store:a.store});assert.equal(other.events().filter(e=>e.event==='campaign_visit').length,1);
+  a.store.set('afterscene_campaign_seen',JSON.stringify({instagram_bio:Date.now()-1800001}));
+  a.store.set('afterscene_campaign_touch',JSON.stringify({id:'instagram_bio',at:Date.now()-1800001}));
+  const expired=app('pricing.html',{store:a.store});expired.AF.track('example');assert.equal(expired.events()[0].promo_id,undefined);
+  const renewed=app('index.html',{query,store:a.store});assert.equal(renewed.events().filter(e=>e.event==='campaign_visit').length,1);
+  const broken=new Map([['afterscene_campaign_seen','not-json'],['afterscene_campaign_touch','not-json']]);assert.doesNotThrow(()=>app('index.html',{query,store:broken}));
+  assert.equal(app('index.html',{query,blockedStorage:true}).events().filter(e=>e.event==='campaign_visit').length,1);
+});
+test('delegated tracking covers every static link and dynamically inserted result pricing links',()=>{
+  for(const file of ['index.html','taste.html','pricing.html','result.html']){
+    const a=app(file);a.ready();
+    a.document.querySelectorAll('a[href]').forEach(el=>{
+      const href=el.getAttribute('href');if(!href||href.startsWith('http')||el.hasAttribute('data-privacy-open')||el.closest('noscript'))return;
+      assert.ok(el.dataset.track,file+' '+el.textContent);
+    });
+  }
+  const a=app('taste.html',{query:'?result=visual'});a.ready();a.load('experience.js');a.click('[data-element-id="taste_result_pricing"]');assert.equal(a.events().filter(e=>e.event==='pricing_entry_click').length,1);assert.equal(a.events().find(e=>e.event==='pricing_entry_click').result_type,'visual');
+  a.click('#quiz-restart');assert.equal(a.events().find(e=>e.event==='taste_quiz_start').entry_point,'shared_result');
 });

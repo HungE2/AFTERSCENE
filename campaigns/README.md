@@ -1,6 +1,6 @@
 # AFTERSCENE SNS·QR 링크
 
-모든 주소는 기존 랜딩페이지로 연결됩니다. 새 기능은 PR 머지·배포 후 표시됩니다.
+모든 QR·주소는 운영 랜딩페이지로 연결됩니다. 기존 주소와 QR은 그대로 사용할 수 있습니다.
 
 | 채널 | 추적 주소 | QR |
 |---|---|---|
@@ -13,6 +13,12 @@
 | YouTube 설명·프로필 | [웹페이지 열기](https://hunge2.github.io/AFTERSCENE/?utm_source=youtube&utm_medium=social&utm_campaign=taste_launch&utm_content=description_01) | [PNG](youtube.png) · [SVG](youtube.svg) |
 | 네이버 블로그 | [웹페이지 열기](https://hunge2.github.io/AFTERSCENE/?utm_source=naver_blog&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01) | [PNG](naver_blog.png) · [SVG](naver_blog.svg) |
 | 오프라인 포스터 | [웹페이지 열기](https://hunge2.github.io/AFTERSCENE/?utm_source=poster&utm_medium=qr&utm_campaign=taste_launch&utm_content=poster_01) | [PNG](offline_poster.png) · [SVG](offline_poster.svg) |
+
+## GA4 주요 이벤트
+- 최우선: preregistration_complete(사전 가입 실습 완료).
+- SNS·QR 도착: campaign_visit. promo_id / promo_source / promo_medium / promo_campaign / promo_content로 채널을 구분합니다.
+- 이벤트 전송 코드 배포와 GA4 관리자 주요 이벤트 지정이 모두 필요합니다.
+- 동일 탭·홍보 주소의 반복 진입은 30분 동안 중복 방지합니다. GA4 세션과 동일한 기준은 아닙니다.
 
 ## 사용 안내
 - PNG: 온라인 홍보물. SVG: 인쇄물. 흰 여백(quiet zone)을 자르거나 QR 위에 로고를 덮지 마세요.

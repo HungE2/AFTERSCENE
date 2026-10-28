@@ -43,3 +43,7 @@ python scripts/generate_campaigns.py
 ```
 
 주소·UTM·QR 파일은 campaigns/에서 함께 관리합니다. 모든 QR은 랜딩페이지로 연결되며 새 기능은 PR 머지·GitHub Pages 배포 후 표시됩니다. PNG는 온라인 홍보물, SVG는 인쇄용입니다. QR 여백을 자르지 마세요.
+
+## 계측 보완 v2
+
+사전 가입 완료(`preregistration_complete`)가 최우선 주요 이벤트입니다. SNS·QR 홍보 주소 방문은 `campaign_visit`로 구분하고, 이후 가입 완료에 홍보 코드를 연결합니다. 기존 QR·URL은 유지합니다. 주요 이벤트 지정은 GA4 관리자에서 별도로 적용해야 하며 [설정 안내](docs/GA4-KEY-EVENTS.md)를 확인하세요.
