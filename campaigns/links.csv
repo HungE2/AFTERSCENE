@@ -1,0 +1,10 @@
+id,channel,url,utm_source,utm_medium,utm_campaign,utm_content,png,svg
+instagram_bio,Instagram 프로필,https://hunge2.github.io/AFTERSCENE/?utm_source=instagram&utm_medium=social&utm_campaign=taste_launch&utm_content=bio,instagram,social,taste_launch,bio,instagram_bio.png,instagram_bio.svg
+instagram_story,Instagram 스토리,https://hunge2.github.io/AFTERSCENE/?utm_source=instagram&utm_medium=social&utm_campaign=taste_launch&utm_content=story_01,instagram,social,taste_launch,story_01,instagram_story.png,instagram_story.svg
+instagram_feed_qr,Instagram 피드 QR,https://hunge2.github.io/AFTERSCENE/?utm_source=instagram&utm_medium=qr&utm_campaign=taste_launch&utm_content=feed_qr_01,instagram,qr,taste_launch,feed_qr_01,instagram_feed_qr.png,instagram_feed_qr.svg
+facebook,Facebook,https://hunge2.github.io/AFTERSCENE/?utm_source=facebook&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01,facebook,social,taste_launch,post_01,facebook.png,facebook.svg
+x,X,https://hunge2.github.io/AFTERSCENE/?utm_source=x&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01,x,social,taste_launch,post_01,x.png,x.svg
+threads,Threads,https://hunge2.github.io/AFTERSCENE/?utm_source=threads&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01,threads,social,taste_launch,post_01,threads.png,threads.svg
+youtube,YouTube 설명·프로필,https://hunge2.github.io/AFTERSCENE/?utm_source=youtube&utm_medium=social&utm_campaign=taste_launch&utm_content=description_01,youtube,social,taste_launch,description_01,youtube.png,youtube.svg
+naver_blog,네이버 블로그,https://hunge2.github.io/AFTERSCENE/?utm_source=naver_blog&utm_medium=social&utm_campaign=taste_launch&utm_content=post_01,naver_blog,social,taste_launch,post_01,naver_blog.png,naver_blog.svg
+offline_poster,오프라인 포스터,https://hunge2.github.io/AFTERSCENE/?utm_source=poster&utm_medium=qr&utm_campaign=taste_launch&utm_content=poster_01,poster,qr,taste_launch,poster_01,offline_poster.png,offline_poster.svg
