@@ -43,6 +43,9 @@
     if (!dialog) { dialog = document.createElement('dialog'); dialog.id='movie-dialog'; dialog.className='movie-dialog'; dialog.setAttribute('aria-labelledby','movie-title'); document.body.appendChild(dialog); }
     dialog.innerHTML=`<span class="eyebrow-new">MOVIE NOTE</span><h2 id="movie-title">${film[0]}</h2><p>${film[3]}</p><p class="quiet">추천은 취향 선택에 따른 예시입니다. 시청 가능 OTT와 관람 등급은 이용 전 확인해주세요.</p><form method="dialog"><button class="secondary-action">닫기</button></form>`;
     dialog.showModal();
+    let closeMethod='button';
+    dialog.oncancel=()=>{closeMethod='escape';};
+    dialog.addEventListener('close',()=>track('movie_detail_close',{content_id:button.dataset.movie,placement:button.dataset.placement,close_method:closeMethod}),{once:true});
   });
   const moodResults = document.getElementById('mood-results');
   if (moodResults) {
@@ -84,7 +87,7 @@
   if(!quizRoot)return;
   let answers=[], step=0, finished=false, currentType=null;
   const entry=new URL(location.href).searchParams.get('from');
-  const entryPoint=['lab','result','header','footer'].includes(entry)?entry:'direct';
+  let entryPoint=['lab','mood','result','header','footer'].includes(entry)?entry:'direct';
   const intro=document.getElementById('quiz-intro'),panel=document.getElementById('quiz-panel'),result=document.getElementById('quiz-result');
   function focusHeading(){panel.querySelector('h2').focus();}
   function draw(){
@@ -93,16 +96,19 @@
       const answer=Number(button.dataset.answer);if(answers[step]!==answer)track('taste_quiz_answer',{quiz_id:'taste_v1',question_id:'q'+(step+1),option_id:typeIds[answer]});answers[step]=answer;
       panel.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));panel.querySelector('#quiz-next').disabled=false;
     }));
-    panel.querySelector('#quiz-prev').addEventListener('click',()=>{if(step>0){step--;draw();focusHeading();}});
-    panel.querySelector('#quiz-next').addEventListener('click',()=>{if(answers[step]===undefined||finished)return;if(step<3){step++;draw();focusHeading();}else{finished=true;const type=resultFor(answers);state.set('result_type',type);track('taste_quiz_complete',{quiz_id:'taste_v1',result_type:type});showResult(type,false);}});
+    panel.querySelector('#quiz-prev').addEventListener('click',()=>{if(step>0){track('taste_quiz_step_click',{quiz_id:'taste_v1',question_id:'q'+(step+1),direction:'previous'});step--;draw();focusHeading();}});
+    panel.querySelector('#quiz-next').addEventListener('click',()=>{if(answers[step]===undefined||finished)return;if(step<3){track('taste_quiz_step_click',{quiz_id:'taste_v1',question_id:'q'+(step+1),direction:'next'});step++;draw();focusHeading();}else{finished=true;const type=resultFor(answers);state.set('result_type',type);track('taste_quiz_complete',{quiz_id:'taste_v1',result_type:type});showResult(type,false);}});
   }
   function start(restart){answers=[];step=0;finished=false;intro.hidden=true;result.hidden=true;panel.hidden=false;if(restart)track('taste_quiz_restart',{quiz_id:'taste_v1',previous_result_type:currentType});track('taste_quiz_start',{quiz_id:'taste_v1',entry_point:entryPoint});draw();focusHeading();}
   document.getElementById('quiz-start').addEventListener('click',()=>start(false));
   function showResult(type,shared){
     currentType=type;const t=types[type];intro.hidden=true;panel.hidden=true;result.hidden=false;
+    track('taste_result_view',{quiz_id:'taste_v1',result_type:type,result_origin:shared?'shared':'own'});
     result.innerHTML=`${shared?'<p class="shared-notice">친구가 공유한 취향 결과예요. 나의 취향도 알아볼까요?</p>':''}<div class="result-banner"><span class="eyebrow-new">AFTERSCENE · YOUR TASTE</span><h2 tabindex="-1">${t.name}</h2><p><b>${t.line}</b></p><p>${t.description}</p><span class="quiet">4개 질문의 선택에 따른 간단한 취향 분류입니다.</span></div><h3>당신의 다음 한 편</h3><div class="movie-grid">${movieCards(t.movies,'taste_result')}</div><div class="action-row"><button class="secondary-action" id="card-save">카드 이미지 저장</button><button class="secondary-action" id="link-copy">결과 링크 복사</button><button class="secondary-action" id="result-share">공유하기</button></div><p id="share-status" class="status-text" role="status"></p><div class="action-row"><a class="primary-action" href="pricing.html?from=taste">나에게 맞는 요금제 보기 →</a><a class="secondary-action" href="./#apply" data-taste-apply>사전 가입하기</a><button class="secondary-action" id="quiz-restart">${shared?'내 취향 알아보기':'다시 하기'}</button></div><p class="quiet">이름·이메일은 결과 카드나 공유 주소에 포함되지 않습니다.</p>`;
     result.querySelector('h2').focus();
-    result.querySelector('#quiz-restart').addEventListener('click',()=>{history.replaceState(null,'',location.pathname);start(!shared);});
+    const pricingLink=result.querySelector('a[href="pricing.html?from=taste"]');
+    pricingLink.dataset.track='pricing_entry_click';pricingLink.dataset.placement='taste_result';pricingLink.dataset.elementId='taste_result_pricing';pricingLink.dataset.destination='pricing';pricingLink.dataset.resultType=type;
+    result.querySelector('#quiz-restart').addEventListener('click',()=>{history.replaceState(null,'',location.pathname);if(shared)entryPoint='shared_result';start(!shared);});
     result.querySelector('[data-taste-apply]').addEventListener('click',()=>{state.set('entry_cta_id','taste_signup');track('preregistration_cta_click',{placement:'taste_result',element_id:'taste_signup',destination:'apply'});});
     const shareUrl=new URL('https://hunge2.github.io/AFTERSCENE/taste.html');shareUrl.search=new URLSearchParams({result:type,utm_source:'afterscene',utm_medium:'referral',utm_campaign:'taste_share',utm_content:type}).toString();
     const status=result.querySelector('#share-status');
