@@ -56,13 +56,31 @@
     return {promo_id:campaign[0],promo_source:campaign[1],promo_medium:campaign[2],promo_campaign:'taste_launch',promo_content:campaign[3]};
   }
   allowed.add('result_origin');
+  function trackMeta(name, params) {
+    if (name === 'page_view' || /scroll/i.test(name) || name === 'section_view') return;
+    const standardEvents = {
+      generate_lead: 'Lead', sign_up: 'CompleteRegistration', contact_click: 'Contact',
+      view_item: 'ViewContent', add_to_cart: 'AddToCart', begin_checkout: 'InitiateCheckout',
+      purchase: 'Purchase', search: 'Search'
+    };
+    if (name === 'purchase') {
+      if (window.fbq) fbq('track', 'Purchase', { value: params && params.value, currency: 'KRW' });
+    } else if (Object.prototype.hasOwnProperty.call(standardEvents, name)) {
+      if (window.fbq) fbq('track', standardEvents[name]);
+    } else {
+      if (window.fbq) fbq('trackCustom', name);
+    }
+  }
   function track(name, params, done) {
     const payload = { page_type: pageType, measurement_version: 'v2', ...campaignContext() };
     Object.entries(params || {}).forEach(([key,value]) => { if (allowed.has(key) && ['string','number','boolean'].includes(typeof value)) payload[key] = value; });
     let finished = false;
     function finish() { if (finished) return; finished = true; if (done) done(); }
     if (done) { payload.event_callback = finish; payload.event_timeout = 700; setTimeout(finish, 800); }
-    if (production) window.gtag('event', name, { ...payload, send_to: id });
+    if (production) {
+      window.gtag('event', name, { ...payload, send_to: id });
+      trackMeta(name, params);
+    }
     else { window.dataLayer.push({ event: name, ...payload }); if (done) setTimeout(finish, 0); }
   }
   window.AF = { track, state, pageType };

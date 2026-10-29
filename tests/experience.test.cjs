@@ -22,6 +22,29 @@ const sandbox={document,window:null,location,navigator,sessionStorage:storage,UR
   const ready=()=>document.dispatchEvent(new dom.Event('DOMContentLoaded'));
   return {document,location,store,load,click,input,events,AF:sandbox.AF,callbacks,sandbox,dom,ready};
 }
+test('Meta mirrors mapped GA4 events once with KRW purchase value and leaves GA4 payload unchanged',()=>{
+  const a=app('index.html',{production:true});const calls=[];
+  a.sandbox.fbq=(...args)=>calls.push(args);
+  const mappings={generate_lead:'Lead',sign_up:'CompleteRegistration',contact_click:'Contact',view_item:'ViewContent',add_to_cart:'AddToCart',begin_checkout:'InitiateCheckout',purchase:'Purchase',search:'Search'};
+  for(const [ga4,meta] of Object.entries(mappings)){
+    a.AF.track(ga4,{value:4900,currency:'USD',email:'private@example.com'});
+    const call=calls.at(-1);assert.equal(call[0],'track');assert.equal(call[1],meta);
+    if(ga4==='purchase'){assert.equal(call[2].value,4900);assert.equal(call[2].currency,'KRW');}
+    const sent=a.events().find(e=>e.event===ga4);assert.equal(sent.send_to,'G-77DJK8C5S3');assert.equal(sent.currency,'USD');assert.equal(sent.email,undefined);
+  }
+  assert.equal(calls.length,8);
+  a.AF.track('preregistration_complete',{email:'private@example.com'});
+  assert.deepEqual(calls.at(-1),['trackCustom','preregistration_complete']);
+  a.AF.track('cta_click');assert.deepEqual(calls.at(-1),['trackCustom','cta_click']);
+});
+test('Meta excludes page views and scroll-related events, tolerates missing pixel, and skips previews',()=>{
+  const a=app('index.html',{production:true});
+  assert.doesNotThrow(()=>a.AF.track('generate_lead'));
+  const calls=[];a.sandbox.fbq=(...args)=>calls.push(args);
+  for(const event of ['page_view','scroll','scroll_depth','custom_scroll','section_view'])a.AF.track(event);
+  assert.equal(calls.length,0);
+  const preview=app('index.html');preview.sandbox.fbq=(...args)=>calls.push(args);preview.AF.track('generate_lead');assert.equal(calls.length,0);
+});
 test('all 256 answer combinations resolve deterministically; previous answers persist; one completion per run',()=>{
   for(let code=0;code<256;code++){
     const a=app('taste.html');a.load('experience.js');a.click('#quiz-start');
@@ -63,11 +86,11 @@ test('form validation, notice-only acknowledgement, wipe and duplicate completio
 });
 test('production tag uses supplied ID; explicit allowlist drops PII; previews load no Google tag',()=>{
   const a=app('index.html',{production:true,query:'?email=private@example.com&utm_source=instagram&utm_medium=social&utm_campaign=taste_launch#apply'});
-  assert.match(a.document.querySelector('script[src*="googletagmanager"]').src,/G-77DJK8C5S3/);
+  assert.match(a.document.querySelector('script[src*="googletagmanager.com/gtag/js"]').src,/G-77DJK8C5S3/);
   a.AF.track('example',{email:'private@example.com',name:'PRIVATE_NAME',plan_id:'choice'});
   const event=a.events().find(e=>e.event==='example');assert.equal(event.plan_id,'choice');assert.equal(event.email,undefined);
   const view=a.events().find(e=>e.event==='page_view');assert.doesNotMatch(view.page_location,/email|private|#apply/);assert.match(view.page_location,/utm_source=instagram/);assert.equal(view.send_to,'G-77DJK8C5S3');assert.equal(event.send_to,'G-77DJK8C5S3');
-  const b=app('index.html');assert.equal(b.document.querySelector('script[src*="googletagmanager"]'),null);
+  const b=app('index.html');assert.equal(b.document.querySelector('script[src*="googletagmanager.com/gtag/js"]'),null);
 });
 test('every public page loads the single GA4 bootstrap early without the missing ga4-easy script',()=>{
   for(const file of ['index.html','taste.html','pricing.html','result.html']){
