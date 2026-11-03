@@ -18,8 +18,9 @@
     if(!form.checkValidity()){close('invalid');form.reportValidity();return;}
     busy=true;ok.disabled=true;cancel.disabled=true;
     form.querySelectorAll('input').forEach(el=>{el.value='';});form.reset();
-    state.set('completion_pending','1');
-    track('preregistration_complete',{form_id:'lead-form',submission_type:'demo',preferred_plan:state.get('preferred_plan')||'undecided',result_type:state.get('result_type')||'none',entry_cta_id:state.get('entry_cta_id')||'direct'},()=>location.replace('result.html'));
+    // The result page consumes this marker and sends the completion event.
+    state.set('completion_pending','result-v2');
+    location.replace('result.html');
   });
   document.querySelectorAll('[data-privacy-open]').forEach(button=>button.addEventListener('click',e=>{e.preventDefault();open('info',button);}));
   if(form){
