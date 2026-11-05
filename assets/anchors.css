@@ -1,0 +1,6 @@
+/* Shared anchor navigation: current pages have no fixed or sticky header. */
+html { scroll-behavior: smooth; }
+section[id], [id].anchor { scroll-margin-top: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
