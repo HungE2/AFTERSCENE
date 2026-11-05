@@ -1,7 +1,7 @@
 /* 학생 랜딩 공통 스타일. 색·폰트는 index.html <style> 안의 :root 변수만 바꾸면 됩니다.
    body 클래스: head-(bold|light|serif|heavy) btn-(solid|outline|arrow|pill) bands */
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+
 body{font-family:var(--font-body);background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;word-break:keep-all}
 img{max-width:100%;display:block}
 a{color:inherit}
@@ -272,7 +272,7 @@ footer.dark{background:#16161a;color:#cfcfd4;opacity:1;border:0}
 .review-panel li{margin-bottom:4px}
 .review-panel button{position:absolute;top:10px;right:12px;background:none;border:0;color:#aaa;cursor:pointer;font-size:16px}
 
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media (max-width:860px){
   section{padding:60px 0}
   .hero-grid,.offer-box,.banner-box,.search-grid,.pdp-grid,.alt-row,.info-grid,.apply-split .form-card{grid-template-columns:1fr;gap:28px}
