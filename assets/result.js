@@ -13,6 +13,7 @@
     entry_cta_id: state.get('entry_cta_id') || 'direct'
   };
   if (pending === 'result-v2') {
+    if (window.sendLeadLog) window.sendLeadLog();
     track('preregistration_complete', {form_id: 'lead-form', ...params});
   }
   track('preregistration_result_view', params);
